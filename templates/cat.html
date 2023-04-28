@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ cat['name'] }} - The Cat Database</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+      img {
+        display: block;
+        margin: auto;
+        max-width: 500px;
+        height: auto;
+        margin-top: 50px;
+      }
+      p {
+        margin: 30px auto;
+        max-width: 600px;
+        text-align: justify;
+      }
+      form {
+        margin: 30px auto;
+        max-width: 600px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+      input[type="submit"],
+      button {
+        display: inline-block;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        background-color: #008CBA;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      input[type="submit"]:hover,
+      button:hover {
+        background-color: #005f6b;
+      }
+      textarea {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="{{ url_for('home') }}"><button>Back to Homepage</button></a>
+    {% if cat %}
+      <h1>{{ cat['name'] }}</h1>
+      <img src="{{ cat['img_url'] }}" alt="{{ cat['name'] }}">
+      <p>{{ cat['short_descr'] }}</p>
+      <form method="post" action="{{ url_for('edit_cat', name=cat['name']) }}">
+        <label for="new_descr">New description:</label>
+        <textarea id="new_descr" name="new_descr">{{ cat['short_descr'] }}</textarea>
+        <button type="submit">Submit</button>
+      </form>
+      <form method="post" action="{{ url_for('delete_cat', name=cat['name']) }}">
+        <button type="submit">Delete</button>
+      </form>
+      {% if cat['short_descr'] != cat['orig_short_descr'] %}
+        <form action="/restore/{{ cat['name'] }}" method="post">
+          <button type="submit">Restore</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p>No data found for {{ name }}</p>
+    {% endif %}
+  </body>
+</html>

@@ -16,30 +16,11 @@ cat_collection = db['cat']
 # instantiate the app
 app = Flask(__name__)
 
-# load credentials and configuration options from .env file
-# if you do not yet have a file named .env, make one based on the template in env.example
-import credentials
-config = credentials.get()
-
-# turn on debugging if in development mode
-if config['FLASK_ENV'] == 'development':
-    # turn on debugging, if in development
-    app.debug = True # debug mnode
-
-""" # make one persistent connection to the database
-connection = pymongo.MongoClient(config['MONGO_HOST'], 27017, 
-                                username=config['MONGO_USER'],
-                                password=config['MONGO_PASSWORD'],
-                                authSource=config['MONGO_DBNAME'])
-db = connection[config['MONGO_DBNAME']] # store a reference to the database
- """
-
 for cat in cat_collection.find():
     cat_collection.update_one(
         {'_id': cat['_id']},
         {'$set': {'orig_short_descr': cat['short_descr']}}
     )
-
 # set up the routes
 @app.route('/home')
 def home():

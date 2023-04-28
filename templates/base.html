@@ -1,31 +1,124 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Flask-MongoDB Example App</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
+    <title>The Cat Database</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #333;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      #description {
+        background-color: #eee;
+        border: 1px solid #ccc;
+        padding: 20px;
+        text-align: center;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        width: 70%;
+        margin-right: 10px;
+      }
+
+      input[type="submit"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: #4CAF50;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      #search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+      }
+
+      /* NEW STYLES */
+      #cat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        margin-top: 20px;
+      }
+
+      .cat-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .cat-button:hover {
+        background-color: #eee;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
-      <header>
-        <h1>Flask-MongoDB Example App</h1>
-        <p>
-          <a href="{{ url_for('home')}}">Home</a> |
-          <a href="{{ url_for('read')}}">All posts</a> |
-          <a href="{{ url_for('create')}}">Create a post</a>
-        </p>
-      </header>
-      <main>{% block container %} {% endblock %}</main>
-      <footer>
-        <p>
-          The source code for this example app is
-          <a href="https://github.com/nyu-database-design/flask-mongodb-example"
-            >available on Github</a
-          >.
-        </p>
-      </footer>
+    <header>
+      <h1>The Cat Database</h1>
+    </header>
+    <div id="description">
+      <p>Welcome to the Cat Database. Here, you can search for a cat breed or scroll through the list of cat breeds below. You can also and add, edit, and delete descriptions for cat breeds once you are on the page for a specific breed.</p>
+      <div id="search-container">
+        <form action="/search" method="POST">
+          <input type="text" placeholder="Search for a breed" id="query" name="search_query">
+          <input type="submit" value="Search">
+        </form>
+      </div>
     </div>
+    <h2>List of Cat Breeds</h2>
+    <div id="cat-grid">
+      <a class="cat-button" href="http://localhost:5000/cat/Abyssinian">Abyssinian</a>
+      <a class="cat-button" href="http://localhost:5000/cat/Balinese-Javanese">Balinese-Javanese</a>
+      <a class="cat-button" href="http://localhost:5000/cat/Bengal">Bengal</a>
+      <a class="cat-button" href="http://localhost:5000/cat/Birman">Birman</a>
+      <a class="cat-button" href="http://localhost:5000/cat/Bombay">Bombay</a>
+      <a class="cat-button" href="http://localhost:5000/cat/Burmese">Burmese</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Chartreux">Chartreux</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Himalayan">Himalayan</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Korat">Korat</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/LaPerm">LaPerm</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Manx">Manx</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Munchkin">Munchkin</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Ocicat">Ocicat</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Oriental">Oriental</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Persian">Persian</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Peterbald">Peterbald</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Pixiebob">Pixiebob</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Ragamuffin">Ragamuffin</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Ragdoll">Ragdoll</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Savannah">Savannah</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Siamese">Siamese</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Siberian">Siberian</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Singapura">Singapura</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Somali">Somali</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Sphynx">Sphynx</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Tonkinese">Tonkinese</a></li>
+      <a class="cat-button" href="http://localhost:5000/cat/Toyger">Toyger</a></li>
+    </ul>
   </body>
 </html>
