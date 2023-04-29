@@ -61,7 +61,7 @@ def search_cat():
     matching_cat = cat_collection.find_one({'name': search_query})
     print(matching_cat)
     if matching_cat:
-        return redirect(f'/cat/{matching_cat["name"]}')
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{matching_cat["name"]}')
     return redirect(url_for('home'))
 
 @app.route('/edit/<name>', methods=['GET', 'POST'])
