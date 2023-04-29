@@ -50,7 +50,6 @@ def cat(name):
 
 @app.route('/~aa8690/web-app-aa8690/flask.cgi/search', methods=['POST'])
 def search_cat():
-    cat_collection = db.cat
     search_query = request.form.get('search_query')
     matching_cat = cat_collection.find_one({'name': search_query})
     print(matching_cat)
@@ -84,10 +83,8 @@ def delete_cat(name):
 @app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/restore/<name>', methods=['POST'])
 def restore_cat(name):
     cat = cat_collection.find_one({'name': name})
-
     if cat and cat['short_descr'] != cat['orig_short_descr']:
         cat_collection.update_one({'name': name}, {'$set': {'short_descr': cat['orig_short_descr']}})
-    
     return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
 @app.errorhandler(Exception)
