@@ -8,11 +8,11 @@ from bson.objectid import ObjectId
 import os
 import subprocess
 from pymongo import MongoClient
-'''
-client = MongoClient("mongodb+srv://aa8690:AAbsm07172038@cat-database.xrbv2kl.mongodb.net/?retryWrites=true&w=majority")
+
+""" client = MongoClient("mongodb+srv://aa8690:AAbsm07172038@cat-database.xrbv2kl.mongodb.net/?retryWrites=true&w=majority")
 db = client.cats
 cat_collection = db['cat']
-'''
+ """
 # instantiate the app
 app = Flask(__name__)
 
