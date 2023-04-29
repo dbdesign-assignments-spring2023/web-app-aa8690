@@ -34,12 +34,6 @@ connection = pymongo.MongoClient(config['MONGO_HOST'], 27017,
 db = connection[config['MONGO_DBNAME']] # store a reference to the database
 cat_collection = db['cat']
 
-for cat in cat_collection.find():
-    cat_collection.update_one(
-        {'_id': cat['_id']},
-        {'$set': {'orig_short_descr': cat['short_descr']}}
-    )
-
 # set up the routes
 @app.route('/home')
 def home():

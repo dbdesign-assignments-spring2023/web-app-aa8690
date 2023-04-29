@@ -80,7 +80,7 @@
         <button type="submit">Delete</button>
       </form>
       {% if cat['short_descr'] != cat['orig_short_descr'] %}
-        <form action="/restore/{{ cat['name'] }}" method="post">
+        <form action="/~aa8690/web-app-aa8690/flask.cgi/cat/restore/{{ cat['name'] }}" method="post">
           <button type="submit">Restore</button>
         </form>
       {% endif %}
