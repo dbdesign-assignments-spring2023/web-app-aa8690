@@ -72,7 +72,7 @@ def edit_cat(name):
     if request.method == 'POST':
         new_descr = request.form['new_descr']
         cat_collection.update_one({'name': name}, {'$set': {'short_descr': new_descr}})
-        return redirect(f'/cat/{name}')
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
     return render_template('edit.html', cat=cat)
 
@@ -84,7 +84,7 @@ def delete_cat(name):
     if request.method == 'POST':
         cat_collection.update_one({'name': name}, {'$set': {'short_descr': ""}})
         print(f'{cat["name"]} has been deleted')
-        return redirect(f'/cat/{name}')
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
     return render_template('delete.html', cat=cat)
 
@@ -96,7 +96,7 @@ def restore_cat(name):
     if cat and cat['short_descr'] != cat['orig_short_descr']:
         cat_collection.update_one({'name': name}, {'$set': {'short_descr': cat['orig_short_descr']}})
     
-    return redirect(f'/cat/{name}')
+    return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
 @app.errorhandler(Exception)
 def handle_error(e):
