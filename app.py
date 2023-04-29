@@ -64,7 +64,7 @@ def search_cat():
         return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{matching_cat["name"]}')
     return redirect(url_for('home'))
 
-@app.route('/edit/<name>', methods=['GET', 'POST'])
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/edit/<name>', methods=['GET', 'POST'])
 def edit_cat(name):
     cat_collection = db.cat
     cat = cat_collection.find_one({'name': name})
@@ -76,9 +76,8 @@ def edit_cat(name):
 
     return render_template('edit.html', cat=cat)
 
-@app.route('/delete/<name>', methods=['GET', 'POST'])
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/delete/<name>', methods=['GET', 'POST'])
 def delete_cat(name):
-    cat_collection = db.cat
     cat = cat_collection.find_one({'name': name})
 
     if request.method == 'POST':
@@ -88,9 +87,8 @@ def delete_cat(name):
 
     return render_template('delete.html', cat=cat)
 
-@app.route('/restore/<name>', methods=['POST'])
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/restore/<name>', methods=['POST'])
 def restore_cat(name):
-    cat_collection = db.cat
     cat = cat_collection.find_one({'name': name})
 
     if cat and cat['short_descr'] != cat['orig_short_descr']:
