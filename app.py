@@ -54,7 +54,7 @@ def cat(name):
     print(cat) # print the cat information to the console
     return render_template('cat.html', cat=cat, name=name)
 
-@app.route('/search', methods=['POST'])
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/search', methods=['POST'])
 def search_cat():
     cat_collection = db.cat
     search_query = request.form.get('search_query')
