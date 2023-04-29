@@ -50,7 +50,6 @@ def home():
 
 @app.route('/cat/<name>')
 def cat(name):
-    cat_collection = db.cat
     cat = cat_collection.find_one({'name': name})
     print(cat) # print the cat information to the console
     return render_template('cat.html', cat=cat, name=name)
