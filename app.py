@@ -7,6 +7,7 @@ import datetime
 from bson.objectid import ObjectId
 import os
 import subprocess
+from pymongo import MongoClient
 
 # instantiate the app
 app = Flask(__name__)
@@ -27,118 +28,60 @@ connection = pymongo.MongoClient(config['MONGO_HOST'], 27017,
                                 password=config['MONGO_PASSWORD'],
                                 authSource=config['MONGO_DBNAME'])
 db = connection[config['MONGO_DBNAME']] # store a reference to the database
+cat_collection = db['cat']
 
 # set up the routes
-
-@app.route('/')
+@app.route('/home')
 def home():
     """
     Route for the home page
     """
-    return render_template('index.html')
+    return render_template('base.html')
 
+@app.route('/cat/<name>')
+def cat(name):
+    cat = cat_collection.find_one({'name': name})
+    print(cat) # print the cat information to the console
+    return render_template('cat.html', cat=cat, name=name)
 
-@app.route('/read')
-def read():
-    """
-    Route for GET requests to the read page.
-    Displays some information for the user with links to other pages.
-    """
-    docs = db.exampleapp.find({}).sort("created_at", -1) # sort in descending order of created_at timestamp
-    return render_template('read.html', docs=docs) # render the read template
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/search', methods=['POST'])
+def search_cat():
+    search_query = request.form.get('search_query')
+    matching_cat = cat_collection.find_one({'name': search_query})
+    print(matching_cat)
+    if matching_cat:
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{matching_cat["name"]}')
+    return redirect(url_for('home'))
 
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/edit/<name>', methods=['GET', 'POST'])
+def edit_cat(name):
+    cat_collection = db.cat
+    cat = cat_collection.find_one({'name': name})
 
-@app.route('/create')
-def create():
-    """
-    Route for GET requests to the create page.
-    Displays a form users can fill out to create a new document.
-    """
-    return render_template('create.html') # render the create template
+    if request.method == 'POST':
+        new_descr = request.form['new_descr']
+        cat_collection.update_one({'name': name}, {'$set': {'short_descr': new_descr}})
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
+    return render_template('edit.html', cat=cat)
 
-@app.route('/create', methods=['POST'])
-def create_post():
-    """
-    Route for POST requests to the create page.
-    Accepts the form submission data for a new document and saves the document to the database.
-    """
-    name = request.form['fname']
-    message = request.form['fmessage']
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/delete/<name>', methods=['GET', 'POST'])
+def delete_cat(name):
+    cat = cat_collection.find_one({'name': name})
 
+    if request.method == 'POST':
+        cat_collection.update_one({'name': name}, {'$set': {'short_descr': ""}})
+        print(f'{cat["name"]} has been deleted')
+        return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
-    # create a new document with the data the user entered
-    doc = {
-        "name": name,
-        "message": message, 
-        "created_at": datetime.datetime.utcnow()
-    }
-    db.exampleapp.insert_one(doc) # insert a new document
+    return render_template('delete.html', cat=cat)
 
-    return redirect(url_for('read')) # tell the browser to make a request for the /read route
-
-
-@app.route('/edit/<mongoid>')
-def edit(mongoid):
-    """
-    Route for GET requests to the edit page.
-    Displays a form users can fill out to edit an existing record.
-    """
-    doc = db.exampleapp.find_one({"_id": ObjectId(mongoid)})
-    return render_template('edit.html', mongoid=mongoid, doc=doc) # render the edit template
-
-
-@app.route('/edit/<mongoid>', methods=['POST'])
-def edit_post(mongoid):
-    """
-    Route for POST requests to the edit page.
-    Accepts the form submission data for the specified document and updates the document in the database.
-    """
-    name = request.form['fname']
-    message = request.form['fmessage']
-
-    doc = {
-        # "_id": ObjectId(mongoid), 
-        "name": name, 
-        "message": message, 
-        "created_at": datetime.datetime.utcnow()
-    }
-
-    db.exampleapp.update_one(
-        {"_id": ObjectId(mongoid)}, # match criteria
-        { "$set": doc }
-    )
-
-    return redirect(url_for('read')) # tell the browser to make a request for the /read route
-
-
-@app.route('/delete/<mongoid>')
-def delete(mongoid):
-    """
-    Route for GET requests to the delete page.
-    Deletes the specified record from the database, and then redirects the browser to the read page.
-    """
-    db.exampleapp.delete_one({"_id": ObjectId(mongoid)})
-    return redirect(url_for('read')) # tell the web browser to make a request for the /read route.
-
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    """
-    GitHub can be configured such that each time a push is made to a repository, GitHub will make a request to a particular web URL... this is called a webhook.
-    This function is set up such that if the /webhook route is requested, Python will execute a git pull command from the command line to update this app's codebase.
-    You will need to configure your own repository to have a webhook that requests this route in GitHub's settings.
-    Note that this webhook does do any verification that the request is coming from GitHub... this should be added in a production environment.
-    """
-    # run a git pull command
-    process = subprocess.Popen(["git", "pull"], stdout=subprocess.PIPE)
-    pull_output = process.communicate()[0]
-    # pull_output = str(pull_output).strip() # remove whitespace
-    process = subprocess.Popen(["chmod", "a+x", "flask.cgi"], stdout=subprocess.PIPE)
-    chmod_output = process.communicate()[0]
-    # send a success response
-    response = make_response('output: {}'.format(pull_output), 200)
-    response.mimetype = "text/plain"
-    return response
+@app.route('/~aa8690/web-app-aa8690/flask.cgi/cat/restore/<name>', methods=['POST'])
+def restore_cat(name):
+    cat = cat_collection.find_one({'name': name})
+    if cat and cat['short_descr'] != cat['orig_short_descr']:
+        cat_collection.update_one({'name': name}, {'$set': {'short_descr': cat['orig_short_descr']}})
+    return redirect(f'/~aa8690/web-app-aa8690/flask.cgi/cat/{name}')
 
 @app.errorhandler(Exception)
 def handle_error(e):
@@ -146,7 +89,6 @@ def handle_error(e):
     Output any errors - good for debugging.
     """
     return render_template('error.html', error=e) # render the edit template
-
 
 if __name__ == "__main__":
     #import logging
